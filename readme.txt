@@ -6,7 +6,7 @@ Tested up to: 3.9
 Stable tag: 2.6.0
 License: GPLv2 or later
 
-The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. You can change the background,fade In time, opacity, content of the pop in the Admin panel.
+The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. 
 
 == Description ==
 
