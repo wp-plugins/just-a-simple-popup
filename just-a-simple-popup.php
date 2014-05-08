@@ -114,7 +114,7 @@ function justAsimplePopup_admin()
 					}	
 				.justAsimplePopuppAdminFormRow label
 					{
-						width:20%;
+						width:24%;
 						float:left;
 					}
 				.justAsimplePopuppAdminFormRow input[type="text"]
