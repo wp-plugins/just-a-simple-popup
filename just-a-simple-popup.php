@@ -73,11 +73,11 @@ function justAsimplePopup_admin()
 				$home=$_REQUEST['onhome'][0];
 				$popuodescription=$_REQUEST['popupcontent'];
 				$opacity=$_REQUEST['opacity'];
-				$wpdb->update($wpdb->prefix .'justasimplepopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription));
+				$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription));
 				$popupupdated="Setting have been successfully saved.";
 			}
 		
-		$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justasimplepopup ");
+		$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup ");
 		$editcolor=$getdata->color;
 		$editfadetime=$getdata->fadetime;
 		$editpages=$getdata->pages;
@@ -202,7 +202,7 @@ function justAsimplePopup_admin_actions()
 function justAsimplePopup() 
 	{
    		global $wpdb;
-		$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justasimplepopup ");
+		$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup ");
 		$color=$getdata->color;
 		$fadetime=$getdata->fadetime;
 		$pages=explode(',',$getdata->pages);
