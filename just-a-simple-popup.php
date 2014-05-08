@@ -73,7 +73,7 @@ function justAsimplePopup_admin()
 				$home=$_REQUEST['onhome'][0];
 				$popuodescription=$_REQUEST['popupcontent'];
 				$opacity=$_REQUEST['opacity'];
-				$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription));
+				$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription),array('id'=>1));
 				$popupupdated="Setting have been successfully saved.";
 			}
 		
