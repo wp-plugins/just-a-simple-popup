@@ -33,6 +33,9 @@ function justAsimplePopup_install() {
    add_option( "justAsimplePopup_db_version", $justAsimplePopup_db_version );
 }
 
+
+
+
 function justAsimplePopup_install_data() {
    global $wpdb;
    $table_name = $wpdb->prefix . "justAsimplePopup";
@@ -40,8 +43,21 @@ function justAsimplePopup_install_data() {
 }
 
 
+function POD_deactivate()
+{
+	global $wpdb;	//required global declaration of WP variable
+
+	$table_name = $wpdb->prefix."justAsimplePopup";
+
+	$sql = "DROP TABLE ". $table_name;
+
+	$wpdb->query($sql);
+
+}
+
 register_activation_hook( __FILE__, 'justAsimplePopup_install' );
 register_activation_hook( __FILE__, 'justAsimplePopup_install_data' );
+register_deactivation_hook(__FILE__ , 'POD_deactivate' );
 
 /// SETTING THE POP-UP IN ADMIN PANEL THE POP-UP ON FRONT END ////////
 
