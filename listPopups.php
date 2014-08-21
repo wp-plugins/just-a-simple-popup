@@ -68,7 +68,7 @@ class POPUP_LISTS extends WP_List_Table {
 			$columns = array(
 				'cb'        => '<input type="checkbox" />', //Render a checkbox instead of text
 				'name'     => 'Name',            
-				'content'  => 'Content',
+				
 				'color'     => 'Color',            
 				'fadetime'  => 'Fade Time',
 				'home'     => 'Home',            
