@@ -82,7 +82,7 @@ class POPUP_LISTS extends WP_List_Table {
 		 {
 			$sortable_columns = array(
 				'name'     => array('name',false),     //true means it's already sorted
-				'content'  => array('content',false),
+				
 				'color'  => array('color',false),
 				'opacity'  => array('opacity',false),
 				'fadetime'  => array('fadetime',false)				
