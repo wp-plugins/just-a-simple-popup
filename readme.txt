@@ -2,15 +2,15 @@
 Contributors: Ankit Chauhan
 Tags: Just A Simple Popup
 Requires at least: 3.0
-Tested up to: 3.9
+Tested up to: 3.9.2
 Stable tag: 2.6.0
 License: GPLv2 or later
 
-The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. 
+The plugin allows you to add multiple popups on different pages by setting up the values in the admin panel after activating the plugin. 
 
 == Description ==
 
-The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. You can change the background,fade In time, opacity, content of the pop in the Admin panel.
+The plugin allows you to add multiple popups on different pages by setting up the values in the admin panel after activating the plugin. You can change the background,fade In time, opacity, content of the pop in the Admin panel.
 
 == Installation ==
 
