@@ -340,7 +340,11 @@ function justAsimplePopup_admin()
 				else if($action=='delete')
 					{
 						$deletePopup=$wpdb->query("delete from  ".$wpdb->prefix ."justAsimplePopup where id=".$popupId."");
-						header('Location:'.site_url().'/wp-admin/admin.php?page=justAsimplePopup');
+					?>
+					<script>
+						location.href='<?php echo site_url(); ?>/wp-admin/admin.php?page=justAsimplePopup';
+					</script>
+					<?php
 					}
 			}
 		else
@@ -376,6 +380,13 @@ function justAsimplePopup_admin()
 						 <?php $popupListTable->display() ?>
 					 </form>
 				 </div>
+				<?php
+				}
+				else	
+					{
+				?>
+						<div class="wrap"><h2>Popups <a href="<?php echo site_url();?>/wp-admin/admin.php?page=addpopup" class="add-new-h2">Add New</a></h2>
+						<h3>No popup found.</h3>
 				<?php
 				}
 			}
