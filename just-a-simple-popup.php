@@ -146,6 +146,12 @@ function justAsimplePopup_add_new_popup()
 						color: #fff;
 						margin-top:20px
 					}
+				.wp-editor-wrap 
+					{
+						position: relative;
+						float: left;
+						width: 100%;
+					}
 				</style>
 				<div id="justAsimplePopuppAdminWrapper">
 					<div id="justAsimplePopuppAdminContent">
@@ -192,11 +198,9 @@ function justAsimplePopup_add_new_popup()
 									if($home==0)
 										echo ' checked="checked"';
 									echo '/>	No							
-								</div>
-								<div class="justAsimplePopuppAdminFormRow">
-									<label for="onhome">Popup content : </label>
-									<textarea name="popupcontent">'.stripslashes($editpopupdesc).'</textarea>	
-								</div>
+								</div>';
+								wp_editor( '', 'testabcd', $settings = array('textarea_name'=>'popupcontent','media_buttons'=>true) );
+								echo '
 								<div class="justAsimplePopuppAdminFormRow">
 									<input type="submit" name="saveJustapopup" id="saveJustapopup" value="Add"/>								
 								</div>
@@ -303,6 +307,12 @@ function justAsimplePopup_admin()
 								color: #fff;
 								margin-top:20px
 							}
+						.wp-editor-wrap 
+							{
+								position: relative;
+								float: left;
+								width: 100%;
+							}
 						</style>
 						<div id="justAsimplePopuppAdminWrapper">
 							<div id="justAsimplePopuppAdminContent">
@@ -349,11 +359,9 @@ function justAsimplePopup_admin()
 											if($edithome==0)
 												echo ' checked="checked"';
 											echo '/>	No							
-										</div>
-										<div class="justAsimplePopuppAdminFormRow">
-											<label for="onhome">Popup content : </label>
-											<textarea name="popupcontent">'.stripslashes($editpopupdesc).'</textarea>	
-										</div>
+										</div>';
+										wp_editor( stripslashes($editpopupdesc), 'testabcd', $settings = array('textarea_name'=>'popupcontent','media_buttons'=>true) );
+										echo '
 										<div class="justAsimplePopuppAdminFormRow">
 											<input type="submit" name="saveJustapopup" id="saveJustapopup" value="Update"/>								
 										</div>
