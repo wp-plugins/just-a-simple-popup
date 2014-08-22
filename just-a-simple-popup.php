@@ -20,6 +20,7 @@ function justAsimplePopup_install() {
   name varchar(200) NOT NULL,
   color varchar(6) NOT NULL,
   width varchar(6) NOT NULL,
+  clickbuttons text NOT NULL,
   fadetime varchar(10) NOT NULL,
   pages varchar(200) NOT NULL,
   home tinyint(4) NOT NULL,
@@ -75,8 +76,9 @@ function justAsimplePopup_add_new_popup()
 				$popuodescription=$_REQUEST['popupcontent'];
 				$opacity=$_REQUEST['opacity'];
 				$width=$_REQUEST['width'];
+				$clickbuttons=$_REQUEST['clickbuttons'];
 				
-				$wpdb->insert($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width));
+				$wpdb->insert($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width,'clickbuttons'=>$clickbuttons));
 				$popupupdated="Popup Successfully Created.";
 			}
 		
@@ -96,12 +98,12 @@ function justAsimplePopup_add_new_popup()
 					}
 				#justAsimplePopuppAdminWrapper
 					{
-						width: 80%;
+						width: 90%;
 						padding: 10px;
 					}
 				#justAsimplePopuppAdminContent
 					{
-						width: 80%;
+						width: 100%;
 						
 					}
 				#justAsimplePopuppAdminContent h2
@@ -177,6 +179,10 @@ function justAsimplePopup_add_new_popup()
 									<input type="text" name="width" id="width" value="" />								
 								</div>
 								<div class="justAsimplePopuppAdminFormRow">
+									<label for="width">Enter HTML Element Id/class : </label>
+									<input type="text" name="clickbuttons" id="clickbuttons" value="" /> (Seperate the Ids/Class by comma and include # for id and . for class by clicking on which the popup will appear)							
+								</div>
+								<div class="justAsimplePopuppAdminFormRow">
 									<label for="onhome">Show on Home Page : </label>
 									<input type="radio" name="onhome[]" id="onhome" value="1" ';
 									if($home==1)
@@ -225,7 +231,9 @@ function justAsimplePopup_admin()
 								$home=$_REQUEST['onhome'][0];
 								$popuodescription=$_REQUEST['popupcontent'];
 								$opacity=$_REQUEST['opacity'];
-								$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width),array('id'=>$popupId));
+								$clickbuttons=$_REQUEST['clickbuttons'];
+								
+								$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width,'clickbuttons'=>$clickbuttons),array('id'=>$popupId));
 								$popupupdated="Setting have been successfully saved.";
 							}
 						$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup WHERE id=".$popupId);
@@ -237,6 +245,8 @@ function justAsimplePopup_admin()
 						$editpopupdesc=$getdata->content;
 						$editwidth=$getdata->width;
 						$editopacity=$getdata->opacity;
+						$editclickbuttons=$getdata->clickbuttons;
+						
 						echo '<script src="'.plugins_url().'/just-a-simple-popup/js/jscolor.js"></script><div id="justAsimplePopuppAdmin">
 						<style>
 						#justAsimplePopuppAdmin
@@ -245,12 +255,12 @@ function justAsimplePopup_admin()
 							}
 						#justAsimplePopuppAdminWrapper
 							{
-								width: 80%;
+								width: 90%;
 								padding: 10px;
 							}
 						#justAsimplePopuppAdminContent
 							{
-								width: 80%;
+								width: 100%;
 								
 							}
 						#justAsimplePopuppAdminContent h2
@@ -325,6 +335,10 @@ function justAsimplePopup_admin()
 											<label for="width">Popup Width(in %) : </label>
 											<input type="text" name="width" id="width"  value="'.$editwidth.'"  />								
 										</div>
+										<div class="justAsimplePopuppAdminFormRow">
+									<label for="width">Enter HTML Element Id/class : </label>
+									<input type="text" name="clickbuttons" id="clickbuttons" value="'.$editclickbuttons.'" />  (Seperate the Ids/Class by comma and include # for id and . for class by clicking on which the popup will appear)							
+								</div>
 										<div class="justAsimplePopuppAdminFormRow">
 											<label for="onhome">Show on Home Page : </label>
 											<input type="radio" name="onhome[]" id="onhome" value="1" ';
@@ -436,7 +450,7 @@ function justAsimplePopup()
 				$width=$getdata->width;
 				$curr_ID=get_the_ID();
 				$rgba = hex2rgba($color, $getdata->opacity);
-				
+				$clickbuttons=$getdata->clickbuttons;
 				
 				echo '<style>
 				 #simpleclosePopup  
@@ -470,8 +484,30 @@ function justAsimplePopup()
 						border-radius:10px;
 					 }
 				
-				</style>
-				<script>
+				</style>';
+				if($clickbuttons!='')
+					{
+						echo '<script>
+								  jQuery(document).ready(function()
+									{
+										jQuery("'.$clickbuttons.'").click(function()
+											{
+											  
+												jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
+												jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime.');
+											 
+											  
+												jQuery("#simpleclosePopup").click(function()
+													{		
+														jQuery("#justAsimplePopupOverlay").fadeOut(500);
+													}); 
+											
+										  });
+									 });
+							</script>';
+					}
+				
+				echo '<script>
 				 jQuery(document).ready(function()
 					{
 					  
