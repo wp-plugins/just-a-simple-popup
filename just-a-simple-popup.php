@@ -442,13 +442,13 @@ function justAsimplePopup()
    		global $wpdb;
 		if(is_home() || is_front_page())
 			{
-				$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup WHERE home=1 LIMIT 1");
+				$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup WHERE home=1 OR clickbuttons!='' LIMIT 1");
 			}
 		else
 			{
-				$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup  WHERE pages LIKE '%,".get_the_ID().",%' LIMIT 1");
+				$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup  WHERE pages LIKE '%,".get_the_ID().",%'  OR clickbuttons!='' LIMIT 1");
 			}
-		if(count($getdata))
+		if(count($getdata) || $clickbuttons!='')
 			{
 				$color=$getdata->color;
 				$fadetime=$getdata->fadetime;
@@ -514,22 +514,25 @@ function justAsimplePopup()
 									 });
 							</script>';
 					}
-				
-				echo '<script>
-				 jQuery(document).ready(function()
+				if($home)
 					{
-					  
-						jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
-						jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime.');
-					 
-					  
-					  jQuery("#simpleclosePopup").click(function()
-							{		
-								jQuery("#justAsimplePopupOverlay").fadeOut(500);
-							}); 
-					
-				  });
-				</script>
+						echo '<script>
+						 jQuery(document).ready(function()
+							{
+							  
+								jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
+								jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime.');
+							 
+							  
+							  jQuery("#simpleclosePopup").click(function()
+									{		
+										jQuery("#justAsimplePopupOverlay").fadeOut(500);
+									}); 
+							
+						  });
+						</script>';
+				}
+				echo '
 				<div id="justAsimplePopupOverlay">
 					 <div id="justAsimplePopupWrapper">
 						<div id="justAsimplePopupContent">
