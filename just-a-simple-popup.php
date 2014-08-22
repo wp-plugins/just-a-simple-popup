@@ -19,6 +19,7 @@ function justAsimplePopup_install() {
   id int(11) NOT NULL AUTO_INCREMENT,
   name varchar(200) NOT NULL,
   color varchar(6) NOT NULL,
+  width varchar(6) NOT NULL,
   fadetime varchar(10) NOT NULL,
   pages varchar(200) NOT NULL,
   home tinyint(4) NOT NULL,
@@ -73,8 +74,9 @@ function justAsimplePopup_add_new_popup()
 				$home=$_REQUEST['onhome'][0];
 				$popuodescription=$_REQUEST['popupcontent'];
 				$opacity=$_REQUEST['opacity'];
+				$width=$_REQUEST['width'];
 				
-				$wpdb->insert($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name));
+				$wpdb->insert($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width));
 				$popupupdated="Popup Successfully Created.";
 			}
 		
@@ -171,6 +173,10 @@ function justAsimplePopup_add_new_popup()
 									<input type="text" name="pageids" id="pageids" value="" /> (Please enter page IDs seperated by commas(,) on which the popup will be displayed.)								
 								</div>
 								<div class="justAsimplePopuppAdminFormRow">
+									<label for="width">Popup Width(in %) : </label>
+									<input type="text" name="width" id="width" value="" />								
+								</div>
+								<div class="justAsimplePopuppAdminFormRow">
 									<label for="onhome">Show on Home Page : </label>
 									<input type="radio" name="onhome[]" id="onhome" value="1" ';
 									if($home==1)
@@ -212,13 +218,14 @@ function justAsimplePopup_admin()
 						if(isset($_REQUEST['saveJustapopup']))
 							{
 								$name=$_REQUEST['popname'];
+								$width=$_REQUEST['width'];
 								$color=$_REQUEST['background'];
 								$fadetime=$_REQUEST['fadetime'];
 								$pageids=','.$_REQUEST['pageids'].',';
 								$home=$_REQUEST['onhome'][0];
 								$popuodescription=$_REQUEST['popupcontent'];
 								$opacity=$_REQUEST['opacity'];
-								$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name),array('id'=>$popupId));
+								$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width),array('id'=>$popupId));
 								$popupupdated="Setting have been successfully saved.";
 							}
 						$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup WHERE id=".$popupId);
@@ -228,6 +235,7 @@ function justAsimplePopup_admin()
 						$editpages=$getdata->pages;
 						$edithome=$getdata->home;
 						$editpopupdesc=$getdata->content;
+						$editwidth=$getdata->width;
 						$editopacity=$getdata->opacity;
 						echo '<script src="'.plugins_url().'/just-a-simple-popup/js/jscolor.js"></script><div id="justAsimplePopuppAdmin">
 						<style>
@@ -314,6 +322,10 @@ function justAsimplePopup_admin()
 											<input type="text" name="pageids" id="pageids" value="'.rtrim(ltrim($editpages,','),',').'" /> (Please enter page IDs seperated by commas(,) on which the popup will be displayed.)								
 										</div>
 										<div class="justAsimplePopuppAdminFormRow">
+											<label for="width">Popup Width(in %) : </label>
+											<input type="text" name="width" id="width"  value="'.$editwidth.'"  />								
+										</div>
+										<div class="justAsimplePopuppAdminFormRow">
 											<label for="onhome">Show on Home Page : </label>
 											<input type="radio" name="onhome[]" id="onhome" value="1" ';
 											if($edithome==1)
@@ -365,6 +377,7 @@ function justAsimplePopup_admin()
 								$popupArray[$countPop]['opacity']=$popup->opacity;
 								$popupArray[$countPop]['fadetime']=$popup->fadetime;
 								$popupArray[$countPop]['content']=$popup->content;	
+								$popupArray[$countPop]['width']=$popup->width;	
 								$countPop++;
 							}				
 					
@@ -420,7 +433,10 @@ function justAsimplePopup()
 				$pages=explode(',',$getdata->pages);
 				$home=$getdata->home;
 				$popupdesc=$getdata->content;
+				$width=$getdata->width;
 				$curr_ID=get_the_ID();
+				$rgba = hex2rgba($color, $getdata->opacity);
+				
 				
 				echo '<style>
 				 #simpleclosePopup  
@@ -436,18 +452,17 @@ function justAsimplePopup()
 				}
 				 #justAsimplePopupOverlay 
 					 {
-						position: fixed;
+						position: absolute;
 						display: none;
 						top: 0px;
 						left: 0px;
-						background: #'.$color.';
-						opacity:'.$getdata->opacity.';
+						background: '.$rgba.';
 						width: 100%;
 						z-index: 999999;
 					}
 				  #justAsimplePopupWrapper 
 					  {
-						width: 40%;
+						width: '.$width.'%;
 						margin: 0 auto;
 						background: #eee;
 						padding: 25px;
@@ -484,4 +499,45 @@ function justAsimplePopup()
 
 add_action('admin_menu', 'justAsimplePopup_admin_actions');
 add_action('wp_head','justAsimplePopup');
+
+function hex2rgba($color, $opacity = false) 
+	{
+
+		$default = 'rgb(0,0,0)';
+
+		//Return default if no color provided
+		if(empty($color))
+			  return $default; 
+
+		//Sanitize $color if "#" is provided 
+			if ($color[0] == '#' ) {
+				$color = substr( $color, 1 );
+			}
+
+			//Check if color has 6 or 3 characters and get values
+			if (strlen($color) == 6) {
+					$hex = array( $color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5] );
+			} elseif ( strlen( $color ) == 3 ) {
+					$hex = array( $color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2] );
+			} else {
+					return $default;
+			}
+
+			//Convert hexadec to rgb
+			$rgb =  array_map('hexdec', $hex);
+
+			//Check if opacity is set(rgba or rgb)
+			if($opacity){
+				if(abs($opacity) > 1)
+					$opacity = 1.0;
+				$output = 'rgba('.implode(",",$rgb).','.$opacity.')';
+			} else {
+				$output = 'rgb('.implode(",",$rgb).')';
+			}
+
+			//Return rgb(a) color string
+			return $output;
+	}
+
+
 ?>
