@@ -8,6 +8,10 @@ License: GPLv2 or later
 
 The plugin allows you to add multiple popups on different pages by setting up the values in the admin panel after activating the plugin. 
 
+== Screenshots ==
+
+1. screenshot-1
+
 == Description ==
 
 The plugin allows you to add multiple popups on different pages by setting up the values in the admin panel after activating the plugin. You can change the background,fade In time, opacity, content of the pop in the Admin panel.
