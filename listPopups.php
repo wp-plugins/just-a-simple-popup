@@ -41,14 +41,14 @@ class POPUP_LISTS extends WP_List_Table {
 			
 			//Build row actions
 			$actions = array(
-				'edit'      => sprintf('<a href="?page=%s&action=%s&popupid=%s">Edit</a>',$_REQUEST['page'],'edit',$item['id']),
-				'delete'    => sprintf('<a href="?page=%s&action=%s&popupid=%s">Delete</a>',$_REQUEST['page'],'delete',$item['id']),
+				'edit'      => sprintf('<a href="?page=%s&action=%s&popupid=%s">Edit</a>',$_REQUEST['page'],'edit',$item['ID']),
+				'delete'    => sprintf('<a href="?page=%s&action=%s&popupid=%s">Delete</a>',$_REQUEST['page'],'delete',$item['ID']),
 			);
 			
 			//Return the title contents
 			return sprintf('%1$s <span style="color:silver">(id:%2$s)</span>%3$s',
 				/*$1%s*/ $item['name'],
-				/*$2%s*/ $item['id'],
+				/*$2%s*/ $item['ID'],
 				/*$3%s*/ $this->row_actions($actions)
 			);
 		}
@@ -94,8 +94,7 @@ class POPUP_LISTS extends WP_List_Table {
     function get_bulk_actions() 
 		{
 			$actions = array(
-				
-				
+				'delete'=>'Delete'				
 			);
 			return $actions;
 		}
@@ -106,7 +105,13 @@ class POPUP_LISTS extends WP_List_Table {
 			
 			//Detect when a bulk action is being triggered...
 			if( 'delete'===$this->current_action() ) {
-				wp_die('Items deleted (or they would be if we had items to delete)!');
+				if(count($_REQUEST['popup'])>0)
+					{
+						$ids=implode(',',$_REQUEST['popup']);
+						global $wpdb;
+						$wpdb->query("DELETE FROM ".$wpdb->prefix."justAsimplePopup WHERE id IN (".$ids.")");
+					}
+				
 			}
 			
 		}

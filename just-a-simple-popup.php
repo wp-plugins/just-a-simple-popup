@@ -212,7 +212,7 @@ function justAsimplePopup_add_new_popup()
 	}
 
 
-/// SETTING THE POP-UP IN ADMIN PANEL THE POP-UP ON FRONT END ////////
+/// SETTING THE POP-UP IN ADMIN PANEL ////////
 
 
 function justAsimplePopup_admin() 
@@ -391,7 +391,7 @@ function justAsimplePopup_admin()
 					{				
 						foreach($getAllPopups as $popup)
 							{
-								$popupArray[$countPop]['id']=$popup->id;
+								$popupArray[$countPop]['ID']=$popup->id;
 								$popupArray[$countPop]['name']=$popup->name;
 								$popupArray[$countPop]['color']=$popup->color;
 								$popupArray[$countPop]['pages']=$popup->pages;
