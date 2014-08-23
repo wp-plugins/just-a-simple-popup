@@ -11,6 +11,8 @@ The plugin allows you to add multiple popups on different pages by setting up th
 == Screenshots ==
 
 1. screenshot-1
+2. screenshot-2
+3. screenshot-3
 
 == Description ==
 
