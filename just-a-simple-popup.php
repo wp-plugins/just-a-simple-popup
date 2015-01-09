@@ -4,62 +4,11 @@ Plugin Name: just a simple popup
 Author: Ankit Chauhan
 Author URI: https://www.facebook.com/Ankit6765
 Version:2.0
-Description: The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. You can change the background,fade In time, opacity, content of the pop in the Admin panel.
+Description: The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. You can change the background,fade In time, opacity, content of the pop in the Admin panel. You can also add shortcode to the content of this popup.
 */
 global $justAsimplePopup_db_version;
 $justAsimplePopup_db_version = "2.0";
-include('listPopups.php');
-function justAsimplePopup_install() {
-   global $wpdb;
-   global $justAsimplePopup_db_version;
-
-   $table_name = $wpdb->prefix . "justAsimplePopup";
-      
-   $sql = "CREATE TABLE IF NOT EXISTS ".$table_name." (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  name varchar(200) NOT NULL,
-  color varchar(6) NOT NULL,
-  width varchar(6) NOT NULL,
-  clickbuttons text NOT NULL,
-  fadetime varchar(10) NOT NULL,
-  pages varchar(200) NOT NULL,
-  home tinyint(4) NOT NULL,
-  content text NOT NULL,
-  opacity decimal(3,2) NOT NULL,
-  PRIMARY KEY (id)
-)";
-
-   require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-   $wpdb->query( $sql );
- 
-   add_option( "justAsimplePopup_db_version", $justAsimplePopup_db_version );
-}
-
-
-
-
-function justAsimplePopup_install_data() {
-   global $wpdb;
-   $table_name = $wpdb->prefix . "justAsimplePopup";
-   $rows_affected = $wpdb->insert( $table_name, array('color'=>'#000000','fadetime'=>'500','pages'=>'','home'=>0,'opacity'=>0.8,'content'=>''));
-}
-
-
-function POD_deactivate()
-{
-	global $wpdb;	//required global declaration of WP variable
-
-	$table_name = $wpdb->prefix."justAsimplePopup";
-
-	$sql = "DROP TABLE ". $table_name;
-
-	$wpdb->query($sql);
-
-}
-
-register_activation_hook( __FILE__, 'justAsimplePopup_install' );
-register_activation_hook( __FILE__, 'justAsimplePopup_install_data' );
-register_deactivation_hook(__FILE__ , 'POD_deactivate' );
+include('listPopups.php'); 
 
 //// ADD NEW POPUP
 
@@ -78,84 +27,32 @@ function justAsimplePopup_add_new_popup()
 				$width=$_REQUEST['width'];
 				$clickbuttons=$_REQUEST['clickbuttons'];
 				
-				$wpdb->insert($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width,'clickbuttons'=>$clickbuttons));
-				$popupupdated="Popup Successfully Created.";
+				global $user_ID;
+				$new_post = array(
+				'post_title' => $name,
+				'post_content' => $popuodescription,
+				'post_status' => 'publish',
+				'post_date' => date('Y-m-d H:i:s'),
+				'post_author' => $user_ID,
+				'post_type' => 'just_a_simple_popup',				
+				);
+				$post_id = wp_insert_post($new_post);
+				add_post_meta($post_id, 'color', $color);
+				add_post_meta($post_id, 'fadetime', $fadetime);
+				add_post_meta($post_id, 'pageids', $pageids);
+				add_post_meta($post_id, 'home', $home);
+				add_post_meta($post_id, 'opacity', $opacity);
+				add_post_meta($post_id, 'width', $width);
+				add_post_meta($post_id, 'clickbuttons', $clickbuttons);
+				$popupupdated='Pop up successfully added.';
 			}
-		
-		/*$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup ");
-		$editcolor=$getdata->color;
-		$editfadetime=$getdata->fadetime;
-		$editpages=$getdata->pages;
-		$edithome=$getdata->home;
-		$editpopupdesc=$getdata->content;
-		$editopacity=$getdata->opacity;*/
-		
+					
 		echo '<script src="'.plugins_url().'/just-a-simple-popup/js/jscolor.js"></script><div id="justAsimplePopuppAdmin">
-				<style>
-				#justAsimplePopuppAdmin
-					{
-						width: 100%;
-					}
-				#justAsimplePopuppAdminWrapper
-					{
-						width: 90%;
-						padding: 10px;
-					}
-				#justAsimplePopuppAdminContent
-					{
-						width: 100%;
-						
-					}
-				#justAsimplePopuppAdminContent h2
-					{
-						border-bottom: 2px solid gray;
-						padding-bottom: 10px;
-					}
-				.justAsimplePopuppAdminFormRow
-					{
-						width:100%;
-						float:left;
-						margin:5px 0;
-					}	
-				.justAsimplePopuppAdminFormRow label
-					{
-						width:24%;
-						float:left;
-					}
-				.justAsimplePopuppAdminFormRow input[type="text"]
-					{
-						width:40%;
-						float:left;
-						
-					}
-				.justAsimplePopuppAdminFormRow textarea
-					{
-						width:60%;
-						float:left;
-						height:200px;
-					}
-				.justAsimplePopuppAdminFormRow input[type="submit"]
-					{
-						width: 25%;
-						float: left;
-						background: green;
-						padding: 10px 0;
-						border: none;
-						cursor: pointer;
-						border-radius: 10px;
-						color: #fff;
-						margin-top:20px
-					}
-				.wp-editor-wrap 
-					{
-						position: relative;
-						float: left;
-						width: 100%;
-					}
-				</style>
+				<link href="'.plugins_url().'/just-a-simple-popup/css/style-admin.css" rel="stylesheet">		
+				</link>
 				<div id="justAsimplePopuppAdminWrapper">
 					<div id="justAsimplePopuppAdminContent">
-						<h2>Just A Simple Popup Settings:</h2>
+						<h2>Add Simple Popup :</h2>
 						<h4>'.$popupupdated.'</h4>
 						<div id="justAsimplePopuppAdminForm">
 									
@@ -237,83 +134,62 @@ function justAsimplePopup_admin()
 								$opacity=$_REQUEST['opacity'];
 								$clickbuttons=$_REQUEST['clickbuttons'];
 								
-								$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width,'clickbuttons'=>$clickbuttons),array('id'=>$popupId));
+								$popup = array(
+									  'ID'           => $popupId,
+									  'post_content' => $popuodescription,
+									  'post_title' => $name,
+								  );
+								
+								// Update the post into the database
+								wp_update_post( $popup );
+								
+								update_post_meta($popupId,'color',$color);
+								update_post_meta($popupId,'pageids',$pageids);
+								update_post_meta($popupId,'fadetime',$fadetime);
+								update_post_meta($popupId,'home',$home);
+								update_post_meta($popupId,'width',$width);
+								update_post_meta($popupId,'opacity',$opacity);
+								update_post_meta($popupId,'clickbuttons',$clickbuttons);
+							
+								
+								//$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width,'clickbuttons'=>$clickbuttons),array('id'=>$popupId));
 								$popupupdated="Setting have been successfully saved.";
 							}
-						$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup WHERE id=".$popupId);
-						$editname=$getdata->name;
-						$editcolor=$getdata->color;
-						$editfadetime=$getdata->fadetime;
-						$editpages=$getdata->pages;
-						$edithome=$getdata->home;
-						$editpopupdesc=$getdata->content;
-						$editwidth=$getdata->width;
-						$editopacity=$getdata->opacity;
-						$editclickbuttons=$getdata->clickbuttons;
+						//$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup WHERE id=".$popupId);
+						
+						$args = array('p' => $popupId,'post_type'=>'just_a_simple_popup');
+						query_posts($args); 
+						if(have_posts())
+							{
+								while(have_posts())
+									{
+										the_post();		
+										$color=get_post_meta(get_the_ID(),'color');
+										$pa=get_post_meta(get_the_ID(),'pageids');
+										$fadetime=get_post_meta(get_the_ID(),'fadetime');								
+										$home=get_post_meta(get_the_ID(),'home');								
+										$width=get_post_meta(get_the_ID(),'width');
+										$curr_ID=get_the_ID();
+										$opa=get_post_meta(get_the_ID(),'opacity');								
+										$clickbuttons=get_post_meta(get_the_ID(),'clickbuttons');
+										
+										$editname=get_the_title();
+										$editcolor=$color[0];
+										$editfadetime=$fadetime[0];
+										$editpages=$pa[0];
+										$edithome=$home[0];
+										$editpopupdesc=get_the_content();
+										$editwidth=$width[0];
+										$editopacity=$opa[0];
+										$editclickbuttons=$clickbuttons[0];									
+										
+									}
+							}
+						
 						
 						echo '<script src="'.plugins_url().'/just-a-simple-popup/js/jscolor.js"></script><div id="justAsimplePopuppAdmin">
-						<style>
-						#justAsimplePopuppAdmin
-							{
-								width: 100%;
-							}
-						#justAsimplePopuppAdminWrapper
-							{
-								width: 90%;
-								padding: 10px;
-							}
-						#justAsimplePopuppAdminContent
-							{
-								width: 100%;
-								
-							}
-						#justAsimplePopuppAdminContent h2
-							{
-								border-bottom: 2px solid gray;
-								padding-bottom: 10px;
-							}
-						.justAsimplePopuppAdminFormRow
-							{
-								width:100%;
-								float:left;
-								margin:5px 0;
-							}	
-						.justAsimplePopuppAdminFormRow label
-							{
-								width:24%;
-								float:left;
-							}
-						.justAsimplePopuppAdminFormRow input[type="text"]
-							{
-								width:40%;
-								float:left;
-								
-							}
-						.justAsimplePopuppAdminFormRow textarea
-							{
-								width:60%;
-								float:left;
-								height:200px;
-							}
-						.justAsimplePopuppAdminFormRow input[type="submit"]
-							{
-								width: 25%;
-								float: left;
-								background: green;
-								padding: 10px 0;
-								border: none;
-								cursor: pointer;
-								border-radius: 10px;
-								color: #fff;
-								margin-top:20px
-							}
-						.wp-editor-wrap 
-							{
-								position: relative;
-								float: left;
-								width: 100%;
-							}
-						</style>
+						<link href="'.plugins_url().'/just-a-simple-popup/css/style-admin.css" rel="stylesheet">		
+						</link>
 						<div id="justAsimplePopuppAdminWrapper">
 							<div id="justAsimplePopuppAdminContent">
 								<h2>Just A Simple Popup Settings:</h2>
@@ -384,39 +260,50 @@ function justAsimplePopup_admin()
 		else
 			{		
 				$popupListTable = new POPUP_LISTS();
-				$getAllPopups=$wpdb->get_results("SELECT * FROM ".$wpdb->prefix."justAsimplePopup");
 				$popupArray=array();
 				$countPop=0;
-				if(count($getAllPopups))
-					{				
-						foreach($getAllPopups as $popup)
+				$args = array('post_type' => 'just_a_simple_popup');
+				query_posts($args); 
+				if(have_posts())
+					{
+						while(have_posts())
 							{
-								$popupArray[$countPop]['ID']=$popup->id;
-								$popupArray[$countPop]['name']=$popup->name;
-								$popupArray[$countPop]['color']=$popup->color;
-								$popupArray[$countPop]['pages']=$popup->pages;
-								$popupArray[$countPop]['home']=$popup->home;
-								$popupArray[$countPop]['opacity']=$popup->opacity;
-								$popupArray[$countPop]['fadetime']=$popup->fadetime;
-								$popupArray[$countPop]['content']=$popup->content;	
-								$popupArray[$countPop]['width']=$popup->width;	
+								the_post();		
+								$color=get_post_meta(get_the_ID(),'color');
+								$pa=get_post_meta(get_the_ID(),'pageids');
+								$fadetime=get_post_meta(get_the_ID(),'fadetime');								
+								$home=get_post_meta(get_the_ID(),'home');								
+								$width=get_post_meta(get_the_ID(),'width');
+								$curr_ID=get_the_ID();
+								$opa=get_post_meta(get_the_ID(),'opacity');								
+								$clickbuttons=get_post_meta(get_the_ID(),'clickbuttons');
+								
+								$popupArray[$countPop]['ID']=get_the_ID();
+								$popupArray[$countPop]['name']=get_the_title();
+								$popupArray[$countPop]['color']=$color[0];
+								$popupArray[$countPop]['pages']=$pa[0];
+								$popupArray[$countPop]['home']=$home[0];
+								$popupArray[$countPop]['opacity']=$opa[0];
+								$popupArray[$countPop]['fadetime']=$fadetime[0];
+								$popupArray[$countPop]['content']=get_the_content;	
+								$popupArray[$countPop]['width']=$width[0];	
 								$countPop++;
-							}				
-					
-				 $popupListTable->prepare_items($popupArray);	
+								
+							}
+						 $popupListTable->prepare_items($popupArray);
+						 ?>
+                         <div class="wrap"><h2>Simple Popups <a href="<?php echo site_url();?>/wp-admin/admin.php?page=addpopup" class="add-new-h2">Add New</a></h2>
+                        <!-- Forms are NOT created automatically, so you need to wrap the table in one to use features like bulk actions -->
+                             <form id="movies-filter" method="get">
+                                 <!-- For plugins, we also need to ensure that the form posts back to our current page -->
+                                 <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+                                 <!-- Now we can render the completed list table -->
+                                 <?php $popupListTable->display() ?>
+                             </form>
+                         </div>
+                  <?php 
+					}				
 				
-				?>
-				<div class="wrap"><h2>Popups <a href="<?php echo site_url();?>/wp-admin/admin.php?page=addpopup" class="add-new-h2">Add New</a></h2>
-				<!-- Forms are NOT created automatically, so you need to wrap the table in one to use features like bulk actions -->
-					 <form id="movies-filter" method="get">
-						 <!-- For plugins, we also need to ensure that the form posts back to our current page -->
-						 <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-						 <!-- Now we can render the completed list table -->
-						 <?php $popupListTable->display() ?>
-					 </form>
-				 </div>
-				<?php
-				}
 				else	
 					{
 				?>
@@ -429,8 +316,8 @@ function justAsimplePopup_admin()
 
 function justAsimplePopup_admin_actions() 
 	{
-		add_menu_page("Just a Simple Popup", "Just a Simple Popup", 1, "justAsimplePopup", "justAsimplePopup_admin");
-		add_submenu_page( 'justAsimplePopup', 'Add Popup', 'Add Popup',1, 'addpopup', 'justAsimplePopup_add_new_popup' );
+		add_menu_page("Simple Popups", "Simple Popups", 1, "justAsimplePopup", "justAsimplePopup_admin");
+		add_submenu_page( 'justAsimplePopup', 'Add Simple Popup', 'Add Simple Popup',1, 'addpopup', 'justAsimplePopup_add_new_popup' );
 	}
 	
 	
@@ -442,106 +329,219 @@ function justAsimplePopup()
    		global $wpdb;
 		if(is_home() || is_front_page())
 			{
-				$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup WHERE home=1 OR clickbuttons!='' LIMIT 1");
+				$args = array('post_type' => 'just_a_simple_popup','meta_query' => array(array('key' => 'home','value' => 1,'compare' => '=')),'posts_per_page'=>1);
+				query_posts($args); 
+				if(have_posts()){
+				while(have_posts())
+					{
+						the_post();		
+						$color=get_post_meta(get_the_ID(),'color');
+						$pa=get_post_meta(get_the_ID(),'pageids');
+						$fadetime=get_post_meta(get_the_ID(),'fadetime');
+						$pages=explode(',',$pa[0]);
+						$home=get_post_meta(get_the_ID(),'home');
+						
+						$width=get_post_meta(get_the_ID(),'width');
+						$curr_ID=get_the_ID();
+						$opa=get_post_meta(get_the_ID(),'opacity');
+						$rgba = hex2rgba($color[0], $opa[0]);
+						$clickbuttons=get_post_meta(get_the_ID(),'clickbuttons');
+						
+						echo '<style>
+						 #simpleclosePopup  
+						 {
+							float: right;
+							margin-top: -22px;
+							margin-right: -22px;
+							background: #000;
+							padding: 3px 7px;
+							border-radius: 50px;
+							color:#fff;
+							text-decoration:none;
+						}
+						 #justAsimplePopupOverlay 
+							 {
+								position: absolute;
+								display: none;
+								top: 0px;
+								left: 0px;
+								background: '.$rgba.';
+								width: 100%;
+								z-index: 999999;
+							}
+						  #justAsimplePopupWrapper 
+							  {
+								width: '.$width[0].'%;
+								margin: 0 auto;
+								background: #eee;
+								padding: 25px;
+								margin-top: 60px;
+								border-radius:10px;
+							 }
+						
+						</style>';
+						if($clickbuttons[0]!='')
+							{
+								echo '<script>
+										  jQuery(document).ready(function()
+											{
+												jQuery("'.$clickbuttons[0].'").click(function()
+													{
+													  
+														jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
+														jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime[0].');
+													 
+													  
+														jQuery("#simpleclosePopup").click(function()
+															{		
+																jQuery("#justAsimplePopupOverlay").fadeOut(500);
+															}); 
+													
+												  });
+											 });
+									</script>';
+							}
+						if($home[0])
+							{
+								echo '<script>
+								 jQuery(document).ready(function()
+									{
+									  
+										jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
+										jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime[0].');
+									 
+									  
+									  jQuery("#simpleclosePopup").click(function()
+											{		
+												jQuery("#justAsimplePopupOverlay").fadeOut(500);
+											}); 
+									
+								  });
+								</script>';
+						}
+						ob_start();
+						the_content();
+						$content = ob_get_clean();
+						echo '
+						<div id="justAsimplePopupOverlay">
+							 <div id="justAsimplePopupWrapper">
+								<div id="justAsimplePopupContent">
+									<a href="javascript:void(0)" id="simpleclosePopup" title="close" >X</a>
+									'.$content.'
+								</div>
+							 </div> 
+						 </div> ';
+										
+					}
+				}				
 			}
 		else
 			{
-				$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup  WHERE pages LIKE '%,".get_the_ID().",%'  OR clickbuttons!='' LIMIT 1");
-			}
-		if(count($getdata) || $clickbuttons!='')
-			{
-				$color=$getdata->color;
-				$fadetime=$getdata->fadetime;
-				$pages=explode(',',$getdata->pages);
-				$home=$getdata->home;
-				$popupdesc=$getdata->content;
-				$width=$getdata->width;
-				$curr_ID=get_the_ID();
-				$rgba = hex2rgba($color, $getdata->opacity);
-				$clickbuttons=$getdata->clickbuttons;
-				
-				echo '<style>
-				 #simpleclosePopup  
-				 {
-					float: right;
-					margin-top: -22px;
-					margin-right: -22px;
-					background: #000;
-					padding: 3px 7px;
-					border-radius: 50px;
-					color:#fff;
-					text-decoration:none;
-				}
-				 #justAsimplePopupOverlay 
-					 {
-						position: absolute;
-						display: none;
-						top: 0px;
-						left: 0px;
-						background: '.$rgba.';
-						width: 100%;
-						z-index: 999999;
-					}
-				  #justAsimplePopupWrapper 
-					  {
-						width: '.$width.'%;
-						margin: 0 auto;
-						background: #eee;
-						padding: 25px;
-						margin-top: 60px;
-						border-radius:10px;
-					 }
-				
-				</style>';
-				if($clickbuttons!='')
+				//$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup  WHERE pages LIKE   OR clickbuttons!='' LIMIT 1");
+				$args = array('post_type' => 'just_a_simple_popup','meta_query' => array(array('key' => 'pageids','value' => ",".get_the_ID().",",'compare' => 'LIKE')),'posts_per_page'=>1);
+				query_posts($args); 
+				if(have_posts()){
+				while(have_posts())
 					{
-						echo '<script>
-								  jQuery(document).ready(function()
-									{
-										jQuery("'.$clickbuttons.'").click(function()
-											{
-											  
-												jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
-												jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime.');
-											 
-											  
-												jQuery("#simpleclosePopup").click(function()
-													{		
-														jQuery("#justAsimplePopupOverlay").fadeOut(500);
-													}); 
-											
-										  });
-									 });
-							</script>';
-					}
-				if($home)
-					{
-						echo '<script>
-						 jQuery(document).ready(function()
+						the_post();		
+						$color=get_post_meta(get_the_ID(),'color');
+						$pa=get_post_meta(get_the_ID(),'pageids');
+						$fadetime=get_post_meta(get_the_ID(),'fadetime');
+						$pages=explode(',',$pa[0]);
+						$home=get_post_meta(get_the_ID(),'home');
+						
+						$width=get_post_meta(get_the_ID(),'width');
+						$curr_ID=get_the_ID();
+						$opa=get_post_meta(get_the_ID(),'opacity');
+						$rgba = hex2rgba($color[0], $opa[0]);
+						$clickbuttons=get_post_meta(get_the_ID(),'clickbuttons');
+						
+						echo '<style>
+						 #simpleclosePopup  
+						 {
+							float: right;
+							margin-top: -22px;
+							margin-right: -22px;
+							background: #000;
+							padding: 3px 7px;
+							border-radius: 50px;
+							color:#fff;
+							text-decoration:none;
+						}
+						 #justAsimplePopupOverlay 
+							 {
+								position: absolute;
+								display: none;
+								top: 0px;
+								left: 0px;
+								background: '.$rgba.';
+								width: 100%;
+								z-index: 999999;
+							}
+						  #justAsimplePopupWrapper 
+							  {
+								width: '.$width[0].'%;
+								margin: 0 auto;
+								background: #eee;
+								padding: 25px;
+								margin-top: 60px;
+								border-radius:10px;
+							 }
+						
+						</style>';
+						if($clickbuttons[0]!='')
 							{
-							  
-								jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
-								jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime.');
-							 
-							  
-							  jQuery("#simpleclosePopup").click(function()
-									{		
-										jQuery("#justAsimplePopupOverlay").fadeOut(500);
-									}); 
-							
-						  });
-						</script>';
+								echo '<script>
+										  jQuery(document).ready(function()
+											{
+												jQuery("'.$clickbuttons[0].'").click(function()
+													{
+													  
+														jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
+														jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime[0].');
+													 
+													  
+														jQuery("#simpleclosePopup").click(function()
+															{		
+																jQuery("#justAsimplePopupOverlay").fadeOut(500);
+															}); 
+													
+												  });
+											 });
+									</script>';
+							}
+						echo '<script>
+								 jQuery(document).ready(function()
+									{
+									  
+										jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
+										jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime[0].');
+									 
+									  
+									  jQuery("#simpleclosePopup").click(function()
+											{		
+												jQuery("#justAsimplePopupOverlay").fadeOut(500);
+											}); 
+									
+								  });
+								</script>';
+						
+						ob_start();
+						the_content();
+						$content = ob_get_clean();
+						echo '
+						<div id="justAsimplePopupOverlay">
+							 <div id="justAsimplePopupWrapper">
+								<div id="justAsimplePopupContent">
+									<a href="javascript:void(0)" id="simpleclosePopup" title="close" >X</a>
+									'.$content.'
+								</div>
+							 </div> 
+						 </div> ';
+										
+					}
 				}
-				echo '
-				<div id="justAsimplePopupOverlay">
-					 <div id="justAsimplePopupWrapper">
-						<div id="justAsimplePopupContent">
-							<a href="javascript:void(0)" id="simpleclosePopup" title="close" >X</a>
-							'.stripslashes($popupdesc).'
-						</div>
-					 </div> 
-				 </div> ';
-			}
+			}		
 	}
 
 add_action('admin_menu', 'justAsimplePopup_admin_actions');
