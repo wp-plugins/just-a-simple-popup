@@ -1,0 +1,63 @@
+@charset "utf-8";
+/* CSS Document */
+
+#justAsimplePopuppAdmin
+	{
+		width: 100%;
+	}
+#justAsimplePopuppAdminWrapper
+	{
+		width: 90%;
+		padding: 10px;
+	}
+#justAsimplePopuppAdminContent
+	{
+		width: 100%;
+		
+	}
+#justAsimplePopuppAdminContent h2
+	{
+		border-bottom: 2px solid gray;
+		padding-bottom: 10px;
+	}
+.justAsimplePopuppAdminFormRow
+	{
+		width:100%;
+		float:left;
+		margin:5px 0;
+	}	
+.justAsimplePopuppAdminFormRow label
+	{
+		width:24%;
+		float:left;
+	}
+.justAsimplePopuppAdminFormRow input[type="text"]
+	{
+		width:40%;
+		float:left;
+		
+	}
+.justAsimplePopuppAdminFormRow textarea
+	{
+		width:60%;
+		float:left;
+		height:200px;
+	}
+.justAsimplePopuppAdminFormRow input[type="submit"]
+	{
+		width: 25%;
+		float: left;
+		background: green;
+		padding: 10px 0;
+		border: none;
+		cursor: pointer;
+		border-radius: 10px;
+		color: #fff;
+		margin-top:20px
+	}
+.wp-editor-wrap 
+	{
+		position: relative;
+		float: left;
+		width: 100%;
+	}
