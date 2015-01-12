@@ -59,7 +59,7 @@ function justAsimplePopup_add_new_popup()
 							<form action="" method="post">
 								<div class="justAsimplePopuppAdminFormRow">
 									<label for="name">Name : </label>
-									<input type="text" name="popname" id="name" class="name" value="" />								
+									<input type="text" name="popname" id="name" class="name" value="" required="required" />								
 								</div>
 								<div class="justAsimplePopuppAdminFormRow">
 									<label for="background">Background-color : </label>
@@ -199,7 +199,7 @@ function justAsimplePopup_admin()
 									<form action="" method="post">
 										<div class="justAsimplePopuppAdminFormRow">
 											<label for="name">Name : </label>
-											<input type="text" name="popname" id="name" class="name" value="'.$editname.'" />								
+											<input type="text" name="popname" id="name" class="name" value="'.$editname.'" required="required" />								
 										</div>
 										<div class="justAsimplePopuppAdminFormRow">
 											<label for="background">Background-color : </label>
