@@ -4,18 +4,18 @@ Plugin Name: just a simple popup
 Author: Ankit Chauhan
 Author URI: https://www.facebook.com/Ankit6765
 Version:2.0
-Description: The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. You can change the background,fade In time, opacity, content of the pop in the Admin panel. You can also add shortcode to the content of this popup.
+Description: The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. User can add multiple pop ups. Also User can change the background,fade In time, opacity, content of the pop in the Admin panel. User can also add shortcode to the content of this popup.
 */
-global $justAsimplePopup_db_version;
-$justAsimplePopup_db_version = "2.0";
-include('listPopups.php'); 
 
-//// ADD NEW POPUP
+include('listPopups.php');  // To show pop ups as list
+
+//// ADD NEW POPUP . This function will be called when user adds a new pop up
 
 function justAsimplePopup_add_new_popup()
 	{
 		global $wpdb;
-		if(isset($_REQUEST['saveJustapopup']))
+		$popupupdated='';
+		if(isset($_REQUEST['saveJustapopup']))   // This condition will be true when Submits the add new pop up form 
 			{
 				$name=$_REQUEST['popname'];
 				$color=$_REQUEST['background'];
@@ -26,6 +26,7 @@ function justAsimplePopup_add_new_popup()
 				$opacity=$_REQUEST['opacity'];
 				$width=$_REQUEST['width'];
 				$clickbuttons=$_REQUEST['clickbuttons'];
+				$onpageload=$_REQUEST['onpageload'][0];
 				
 				global $user_ID;
 				$new_post = array(
@@ -44,6 +45,7 @@ function justAsimplePopup_add_new_popup()
 				add_post_meta($post_id, 'opacity', $opacity);
 				add_post_meta($post_id, 'width', $width);
 				add_post_meta($post_id, 'clickbuttons', $clickbuttons);
+				add_post_meta($post_id, 'onpageload', $onpageload);
 				$popupupdated='Pop up successfully added.';
 			}
 					
@@ -95,7 +97,19 @@ function justAsimplePopup_add_new_popup()
 									if($home==0)
 										echo ' checked="checked"';
 									echo '/>	No							
+								</div>
+								<div class="justAsimplePopuppAdminFormRow" style="margin-bottom:30px;">
+									<label for="onpageload">Show on Page Load : </label>
+									<input type="radio" name="onpageload[]" id="onpageload" value="1" ';
+									if($onpageload==1)
+										echo ' checked="checked"';
+									echo '/>	Yes	
+									<input type="radio" name="onpageload[]" id="onpageload" value="0"';
+									if($onpageload==0)
+										echo ' checked="checked"';
+									echo '/>	No							
 								</div>';
+								
 								wp_editor( '', 'testabcd', $settings = array('textarea_name'=>'popupcontent','media_buttons'=>true) );
 								echo '
 								<div class="justAsimplePopuppAdminFormRow">
@@ -133,6 +147,7 @@ function justAsimplePopup_admin()
 								$popuodescription=$_REQUEST['popupcontent'];
 								$opacity=$_REQUEST['opacity'];
 								$clickbuttons=$_REQUEST['clickbuttons'];
+								$onpageload=$_REQUEST['onpageload'][0];
 								
 								$popup = array(
 									  'ID'           => $popupId,
@@ -150,6 +165,7 @@ function justAsimplePopup_admin()
 								update_post_meta($popupId,'width',$width);
 								update_post_meta($popupId,'opacity',$opacity);
 								update_post_meta($popupId,'clickbuttons',$clickbuttons);
+								update_post_meta($popupId,'onpageload',$onpageload);
 							
 								
 								//$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width,'clickbuttons'=>$clickbuttons),array('id'=>$popupId));
@@ -172,6 +188,7 @@ function justAsimplePopup_admin()
 										$curr_ID=get_the_ID();
 										$opa=get_post_meta(get_the_ID(),'opacity');								
 										$clickbuttons=get_post_meta(get_the_ID(),'clickbuttons');
+										$onpageload=get_post_meta(get_the_ID(),'onpageload');
 										
 										$editname=get_the_title();
 										$editcolor=$color[0];
@@ -181,7 +198,8 @@ function justAsimplePopup_admin()
 										$editpopupdesc=get_the_content();
 										$editwidth=$width[0];
 										$editopacity=$opa[0];
-										$editclickbuttons=$clickbuttons[0];									
+										$editclickbuttons=$clickbuttons[0];	
+										$editonpageload=$onpageload[0];									
 										
 									}
 							}
@@ -235,7 +253,18 @@ function justAsimplePopup_admin()
 											if($edithome==0)
 												echo ' checked="checked"';
 											echo '/>	No							
-										</div>';
+										</div>
+										<div class="justAsimplePopuppAdminFormRow" style="margin-bottom:30px;">
+											<label for="onpageload">Show on Page Load : </label>
+											<input type="radio" name="onpageload[]" id="onpageload" value="1" ';
+											if($editonpageload==1)
+												echo ' checked="checked"';
+											echo '/>	Yes	
+											<input type="radio" name="onpageload[]" id="onpageload" value="0"';
+											if($editonpageload==0)
+												echo ' checked="checked"';
+											echo '/>	No							
+										</div><br>';
 										wp_editor( stripslashes($editpopupdesc), 'testabcd', $settings = array('textarea_name'=>'popupcontent','media_buttons'=>true) );
 										echo '
 										<div class="justAsimplePopuppAdminFormRow">
@@ -455,6 +484,7 @@ function justAsimplePopup()
 						$opa=get_post_meta(get_the_ID(),'opacity');
 						$rgba = hex2rgba($color[0], $opa[0]);
 						$clickbuttons=get_post_meta(get_the_ID(),'clickbuttons');
+						$onpageload=get_post_meta(get_the_ID(),'onpageload');
 						
 						echo '<style>
 						 #simpleclosePopup  
@@ -510,21 +540,24 @@ function justAsimplePopup()
 											 });
 									</script>';
 							}
-						echo '<script>
-								 jQuery(document).ready(function()
-									{
-									  
-										jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
-										jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime[0].');
-									 
-									  
-									  jQuery("#simpleclosePopup").click(function()
-											{		
-												jQuery("#justAsimplePopupOverlay").fadeOut(500);
-											}); 
-									
-								  });
-								</script>';
+						if($onpageload[0]==1)	
+							{
+								echo '<script>
+										 jQuery(document).ready(function()
+											{
+											  
+												jQuery("#justAsimplePopupOverlay").css("height",jQuery(document).height());
+												jQuery("#justAsimplePopupOverlay").fadeIn('.$fadetime[0].');
+											 
+											  
+											  jQuery("#simpleclosePopup").click(function()
+													{		
+														jQuery("#justAsimplePopupOverlay").fadeOut(500);
+													}); 
+											
+										  });
+										</script>';
+							}
 						
 						ob_start();
 						the_content();
@@ -541,7 +574,9 @@ function justAsimplePopup()
 										
 					}
 				}
-			}		
+			}	
+		
+			
 	}
 
 add_action('admin_menu', 'justAsimplePopup_admin_actions');
