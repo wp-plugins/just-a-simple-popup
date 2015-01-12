@@ -58,11 +58,11 @@ function justAsimplePopup_add_new_popup()
 									
 							<form action="" method="post">
 								<div class="justAsimplePopuppAdminFormRow">
-									<label for="popname">Name : </label>
+									<label for="name">Name : </label>
 									<input type="text" name="popname" id="name" class="name" value="" />								
 								</div>
 								<div class="justAsimplePopuppAdminFormRow">
-									<label for="background-color">Background-color : </label>
+									<label for="background">Background-color : </label>
 									<input type="text" name="background" id="background" class="color" value="" readonly="readonly"/>								
 								</div>
 								<div class="justAsimplePopuppAdminFormRow">
@@ -82,7 +82,7 @@ function justAsimplePopup_add_new_popup()
 									<input type="text" name="width" id="width" value="" />								
 								</div>
 								<div class="justAsimplePopuppAdminFormRow">
-									<label for="width">Enter HTML Element Id/class : </label>
+									<label for="clickbuttons">Enter HTML Element Id/class : </label>
 									<input type="text" name="clickbuttons" id="clickbuttons" value="" /> (Seperate the Ids/Class by comma and include # for id and . for class by clicking on which the popup will appear)							
 								</div>
 								<div class="justAsimplePopuppAdminFormRow">
@@ -198,11 +198,11 @@ function justAsimplePopup_admin()
 											
 									<form action="" method="post">
 										<div class="justAsimplePopuppAdminFormRow">
-											<label for="popname">Name : </label>
+											<label for="name">Name : </label>
 											<input type="text" name="popname" id="name" class="name" value="'.$editname.'" />								
 										</div>
 										<div class="justAsimplePopuppAdminFormRow">
-											<label for="background-color">Background-color : </label>
+											<label for="background">Background-color : </label>
 											<input type="text" name="background" id="background" class="color" value="'.$editcolor.'" readonly="readonly"/>								
 										</div>
 										<div class="justAsimplePopuppAdminFormRow">
@@ -222,7 +222,7 @@ function justAsimplePopup_admin()
 											<input type="text" name="width" id="width"  value="'.$editwidth.'"  />								
 										</div>
 										<div class="justAsimplePopuppAdminFormRow">
-									<label for="width">Enter HTML Element Id/class : </label>
+									<label for="clickbuttons">Enter HTML Element Id/class : </label>
 									<input type="text" name="clickbuttons" id="clickbuttons" value="'.$editclickbuttons.'" />  (Seperate the Ids/Class by comma and include # for id and . for class by clicking on which the popup will appear)							
 								</div>
 										<div class="justAsimplePopuppAdminFormRow">
