@@ -107,9 +107,11 @@ class POPUP_LISTS extends WP_List_Table {
 			if( 'delete'===$this->current_action() ) {
 				if(count($_REQUEST['popup'])>0)
 					{
-						$ids=implode(',',$_REQUEST['popup']);
+						$ids=$_REQUEST['popup'];
 						global $wpdb;
-						$wpdb->query("DELETE FROM ".$wpdb->prefix."justAsimplePopup WHERE id IN (".$ids.")");
+						foreach($ids as $singleId)
+							wp_delete_post($singleId);
+						 
 					}
 				
 			}

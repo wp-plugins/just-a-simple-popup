@@ -3,7 +3,7 @@
 Plugin Name: just a simple popup
 Author: Ankit Chauhan
 Author URI: https://www.facebook.com/Ankit6765
-Version:2.0
+Version:2.0.1
 Description: The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. User can add multiple pop ups. Also User can change the background,fade In time, opacity, content of the pop in the Admin panel. User can also add shortcode to the content of this popup.
 */
 
@@ -27,6 +27,8 @@ function justAsimplePopup_add_new_popup()
 				$width=$_REQUEST['width'];
 				$clickbuttons=$_REQUEST['clickbuttons'];
 				$onpageload=$_REQUEST['onpageload'][0];
+				$background_repeat=$_REQUEST['background-repeat'][0];
+				$background_size=$_REQUEST['background-size'];
 				
 				global $user_ID;
 				$new_post = array(
@@ -38,6 +40,41 @@ function justAsimplePopup_add_new_popup()
 				'post_type' => 'just_a_simple_popup',				
 				);
 				$post_id = wp_insert_post($new_post);
+				
+				$currTime=time();
+				if($_FILES['background-image'])
+					{
+						$target_dir = '../wp-content/plugins/just-a-simple-popup/popup-backgrounds/';
+						$target_file = $target_dir .$currTime. basename($_FILES["background-image"]["name"]);
+						$uploadOk = 1;
+						$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+						
+						// Allow certain file formats
+						if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"  && $imageFileType != "gif" ) 
+							{
+								$popupupdated.= "Sorry, only JPG, JPEG, PNG & GIF files are allowed.<br>";
+								$uploadOk = 0;
+							}
+						// Check if $uploadOk is set to 0 by an error
+						if($uploadOk!= 0) 
+							{
+								if (move_uploaded_file($_FILES["background-image"]["tmp_name"], $target_file)) 
+									{
+										$popupupdated.= "The file ".$currTime. basename( $_FILES["background-image"]["name"]). " has been uploaded.<br>";
+										add_post_meta($post_id,'background_image',$currTime. basename($_FILES["background-image"]["name"]));
+									} 
+								else 
+									{
+										$popupupdated.= "Sorry, there was an error uploading your file.<br>";
+									}
+							}										
+					}
+				$popup = array(
+					  'ID'           => $popupId,
+					  'post_content' => $popuodescription,
+					  'post_title' => $name,
+				  );
+				
 				add_post_meta($post_id, 'color', $color);
 				add_post_meta($post_id, 'fadetime', $fadetime);
 				add_post_meta($post_id, 'pageids', $pageids);
@@ -46,6 +83,8 @@ function justAsimplePopup_add_new_popup()
 				add_post_meta($post_id, 'width', $width);
 				add_post_meta($post_id, 'clickbuttons', $clickbuttons);
 				add_post_meta($post_id, 'onpageload', $onpageload);
+				add_post_meta($post_id, 'background-repeat', $background_repeat);
+				add_post_meta($post_id,'background-size',$background_size);
 				$popupupdated='Pop up successfully added.';
 			}
 					
@@ -58,7 +97,7 @@ function justAsimplePopup_add_new_popup()
 						<h4>'.$popupupdated.'</h4>
 						<div id="justAsimplePopuppAdminForm">
 									
-							<form action="" method="post">
+							<form action="" method="post" enctype="multipart/form-data">
 								<div class="justAsimplePopuppAdminFormRow">
 									<label for="name">Name : </label>
 									<input type="text" name="popname" id="name" class="name" value="" required="required" />								
@@ -66,6 +105,21 @@ function justAsimplePopup_add_new_popup()
 								<div class="justAsimplePopuppAdminFormRow">
 									<label for="background">Background-color : </label>
 									<input type="text" name="background" id="background" class="color" value="" readonly="readonly"/>								
+								</div>
+								<div class="justAsimplePopuppAdminFormRow">
+									<label for="background-image">Background-image : </label>
+									<input type="file" name="background-image" id="background-image" class="background-image" value="" />								
+								</div>
+								<div class="justAsimplePopuppAdminFormRow">
+									<label for="background-size">Background-size in % : </label>
+									<input type="number" name="background-size" id="background-size" min="1" max="100" class="background-size" value="" />								
+								</div>
+								<div class="justAsimplePopuppAdminFormRow">
+									<label for="background-repeat">Background-repeat : </label>
+									<input type="radio" name="background-repeat[]" id="background-repeat" value="1" >
+										Yes	
+									<input type="radio" name="background-repeat[]" id="background-repeat" value="0">
+										No									
 								</div>
 								<div class="justAsimplePopuppAdminFormRow">
 									<label for="opacity">Background-transparency : </label>
@@ -129,7 +183,7 @@ function justAsimplePopup_add_new_popup()
 function justAsimplePopup_admin() 
 	{
 		global $wpdb;
-		
+		$popupupdated='';
 		$action=isset($_REQUEST['action'])?$_REQUEST['action']:'';
 		$popupId=isset($_REQUEST['popupid'])?$_REQUEST['popupid']:'';
 		if($action!='' && $popupId!='')
@@ -148,7 +202,38 @@ function justAsimplePopup_admin()
 								$opacity=$_REQUEST['opacity'];
 								$clickbuttons=$_REQUEST['clickbuttons'];
 								$onpageload=$_REQUEST['onpageload'][0];
+								$background_repeat=$_REQUEST['background-repeat'][0];
+								$background_size=$_REQUEST['background-size'];
 								
+								
+								$currTime=time();
+								if($_FILES['background-image'])
+									{
+										$target_dir = '../wp-content/plugins/just-a-simple-popup/popup-backgrounds/';
+										$target_file = $target_dir .$currTime. basename($_FILES["background-image"]["name"]);
+										$uploadOk = 1;
+										$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+										
+										// Allow certain file formats
+										if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"  && $imageFileType != "gif" ) 
+											{
+												$popupupdated.= "Sorry, only JPG, JPEG, PNG & GIF files are allowed.<br>";
+												$uploadOk = 0;
+											}
+										// Check if $uploadOk is set to 0 by an error
+										if($uploadOk!= 0) 
+											{
+												if (move_uploaded_file($_FILES["background-image"]["tmp_name"], $target_file)) 
+													{
+														$popupupdated.= "The file ".$currTime. basename( $_FILES["background-image"]["name"]). " has been uploaded.<br>";
+														update_post_meta($popupId,'background_image',$currTime. basename($_FILES["background-image"]["name"]));
+													} 
+												else 
+													{
+														$popupupdated.= "Sorry, there was an error uploading your file.<br>";
+													}
+											}										
+									}
 								$popup = array(
 									  'ID'           => $popupId,
 									  'post_content' => $popuodescription,
@@ -166,10 +251,13 @@ function justAsimplePopup_admin()
 								update_post_meta($popupId,'opacity',$opacity);
 								update_post_meta($popupId,'clickbuttons',$clickbuttons);
 								update_post_meta($popupId,'onpageload',$onpageload);
+								update_post_meta($popupId,'background-repeat',$background_repeat);
+								update_post_meta($popupId,'background-size',$background_size);
+								//update_post_meta($popupId,'background-size',$background_size);
 							
 								
 								//$wpdb->update($wpdb->prefix .'justAsimplePopup',array('color'=>$color,'fadetime'=>$fadetime,'pages'=>$pageids,'home'=>$home,'opacity'=>$opacity,'content'=>$popuodescription,'name'=>$name,'width'=>$width,'clickbuttons'=>$clickbuttons),array('id'=>$popupId));
-								$popupupdated="Setting have been successfully saved.";
+								$popupupdated.="Setting have been successfully saved.";
 							}
 						//$getdata=$wpdb->get_row("SELECT * from ".$wpdb->prefix ."justAsimplePopup WHERE id=".$popupId);
 						
@@ -189,6 +277,11 @@ function justAsimplePopup_admin()
 										$opa=get_post_meta(get_the_ID(),'opacity');								
 										$clickbuttons=get_post_meta(get_the_ID(),'clickbuttons');
 										$onpageload=get_post_meta(get_the_ID(),'onpageload');
+										$onpageload=get_post_meta(get_the_ID(),'onpageload');
+										$editbackgroundrepeat=get_post_meta(get_the_ID(),'background-repeat');
+										$editbackgroundimage=get_post_meta(get_the_ID(),'background_image');
+										$editbackgroundsize=get_post_meta(get_the_ID(),'background-size');
+										
 										
 										$editname=get_the_title();
 										$editcolor=$color[0];
@@ -206,6 +299,7 @@ function justAsimplePopup_admin()
 						
 						
 						echo '<script src="'.plugins_url().'/just-a-simple-popup/js/jscolor.js"></script><div id="justAsimplePopuppAdmin">
+						<script src="'.plugins_url().'/just-a-simple-popup/js/script.js"></script><div id="justAsimplePopuppAdmin">
 						<link href="'.plugins_url().'/just-a-simple-popup/css/style-admin.css" rel="stylesheet">		
 						</link>
 						<div id="justAsimplePopuppAdminWrapper">
@@ -214,7 +308,7 @@ function justAsimplePopup_admin()
 								<h4>'.$popupupdated.'</h4>
 								<div id="justAsimplePopuppAdminForm">
 											
-									<form action="" method="post">
+									<form action="" method="post" enctype="multipart/form-data">
 										<div class="justAsimplePopuppAdminFormRow">
 											<label for="name">Name : </label>
 											<input type="text" name="popname" id="name" class="name" value="'.$editname.'" required="required" />								
@@ -222,6 +316,35 @@ function justAsimplePopup_admin()
 										<div class="justAsimplePopuppAdminFormRow">
 											<label for="background">Background-color : </label>
 											<input type="text" name="background" id="background" class="color" value="'.$editcolor.'" readonly="readonly"/>								
+										</div>
+										<div class="justAsimplePopuppAdminFormRow">
+											<label for="background-image">Background-image : </label>
+											<input type="file" name="background-image" id="background-image" class="background-image" value="" />								
+										</div>';
+										if($editbackgroundimage[0]!='')
+											{
+												echo '<div class="justAsimplePopuppAdminFormRow">
+														<label for="">&nbsp;</label>
+														<img src="'.plugins_url()."/just-a-simple-popup/popup-backgrounds/".$editbackgroundimage[0].'"  width="100"/>
+														<a href="javascript:void(0);" id="removePopupImage" data="'.$popupId.'">Remove Image</a>							
+													</div>';
+											}											
+										echo '
+										
+										<div class="justAsimplePopuppAdminFormRow">
+											<label for="background-size">Background-size in % : </label>
+											<input type="number" name="background-size" id="background-size" min="1" max="100" class="background-size" value="'.$editbackgroundsize[0].'" />								
+										</div>
+										<div class="justAsimplePopuppAdminFormRow">
+											<label for="background-repeat">Background-repeat : </label>
+											<input type="radio" name="background-repeat[]" id="background-repeat" value="1" ';
+											if($editbackgroundrepeat[0]==1)
+												echo ' checked="checked"';
+											echo '/>	Yes	
+											<input type="radio" name="background-repeat[]" id="background-repeat" value="0"';
+											if($editbackgroundrepeat[0]==0)
+												echo ' checked="checked"';
+											echo '/>	No									
 										</div>
 										<div class="justAsimplePopuppAdminFormRow">
 											<label for="opacity">Background-transparency : </label>
@@ -278,7 +401,7 @@ function justAsimplePopup_admin()
 					}
 				else if($action=='delete')
 					{
-						$deletePopup=$wpdb->query("delete from  ".$wpdb->prefix ."justAsimplePopup where id=".$popupId."");
+						wp_delete_post($popupId);
 					?>
 					<script>
 						location.href='<?php echo site_url(); ?>/wp-admin/admin.php?page=justAsimplePopup';
@@ -306,6 +429,7 @@ function justAsimplePopup_admin()
 								$curr_ID=get_the_ID();
 								$opa=get_post_meta(get_the_ID(),'opacity');								
 								$clickbuttons=get_post_meta(get_the_ID(),'clickbuttons');
+								
 								
 								$popupArray[$countPop]['ID']=get_the_ID();
 								$popupArray[$countPop]['name']=get_the_title();
@@ -373,10 +497,15 @@ function justAsimplePopup()
 						$width=get_post_meta(get_the_ID(),'width');
 						$curr_ID=get_the_ID();
 						$opa=get_post_meta(get_the_ID(),'opacity');
-						$rgba = hex2rgba($color[0], $opa[0]);
+						$rgba = jasp_hex2rgba($color[0], $opa[0]);
 						$clickbuttons=get_post_meta(get_the_ID(),'clickbuttons');
+						$backgroundimage=get_post_meta(get_the_ID(),'background_image');
+						$backgroundrepeat=get_post_meta(get_the_ID(),'background-repeat');
+						$backgroundsize=get_post_meta(get_the_ID(),'background-size');
 						
-						echo '<style>
+						echo '
+						<script src="'.plugins_url().'/just-a-simple-popup/js/jquery.min.js" type="text/javascript"></script>
+						<style>
 						 #simpleclosePopup  
 						 {
 							float: right;
@@ -388,13 +517,18 @@ function justAsimplePopup()
 							color:#fff;
 							text-decoration:none;
 						}
-						 #justAsimplePopupOverlay 
+						#justAsimplePopupOverlay 
 							 {
 								position: absolute;
 								display: none;
 								top: 0px;
 								left: 0px;
-								background: '.$rgba.';
+								background-color: '.$rgba.';
+								background-image:url('.plugins_url().'/just-a-simple-popup/popup-backgrounds/'.$backgroundimage[0].');';
+								if($backgroundrepeat[0]==0)
+									echo 'background-repeat:no-repeat;';
+								echo '
+								background-size:'.$backgroundsize[0].'% '.$backgroundsize[0].'% ;
 								width: 100%;
 								z-index: 999999;
 							}
@@ -402,7 +536,7 @@ function justAsimplePopup()
 							  {
 								width: '.$width[0].'%;
 								margin: 0 auto;
-								background: #eee;
+								background: #FAFAFA;
 								padding: 25px;
 								margin-top: 60px;
 								border-radius:10px;
@@ -411,7 +545,9 @@ function justAsimplePopup()
 						</style>';
 						if($clickbuttons[0]!='')
 							{
-								echo '<script>
+								echo '
+								
+								<script>
 										  jQuery(document).ready(function()
 											{
 												jQuery("'.$clickbuttons[0].'").click(function()
@@ -482,9 +618,11 @@ function justAsimplePopup()
 						$width=get_post_meta(get_the_ID(),'width');
 						$curr_ID=get_the_ID();
 						$opa=get_post_meta(get_the_ID(),'opacity');
-						$rgba = hex2rgba($color[0], $opa[0]);
+						$rgba = jasp_hex2rgba($color[0], $opa[0]);
 						$clickbuttons=get_post_meta(get_the_ID(),'clickbuttons');
 						$onpageload=get_post_meta(get_the_ID(),'onpageload');
+						$backgroundimage=get_post_meta(get_the_ID(),'background_image');
+						$backgroundrepeat=get_post_meta(get_the_ID(),'background-repeat');
 						
 						echo '<style>
 						 #simpleclosePopup  
@@ -504,15 +642,20 @@ function justAsimplePopup()
 								display: none;
 								top: 0px;
 								left: 0px;
-								background: '.$rgba.';
+								background-color: '.$rgba.';
+								background-image:url('.plugins_url().'/just-a-simple-popup/popup-backgrounds/'.$backgroundimage[0].');';
+								if($backgroundrepeat[0]==0)
+									echo 'background-repeat:no-repeat;';
+								echo '
+								background-size:'.$backgroundsize[0].'% '.$backgroundsize[0].'% ;
 								width: 100%;
 								z-index: 999999;
 							}
-						  #justAsimplePopupWrapper 
+						#justAsimplePopupWrapper 
 							  {
 								width: '.$width[0].'%;
 								margin: 0 auto;
-								background: #eee;
+								background: #FAFAFA;
 								padding: 25px;
 								margin-top: 60px;
 								border-radius:10px;
@@ -582,7 +725,7 @@ function justAsimplePopup()
 add_action('admin_menu', 'justAsimplePopup_admin_actions');
 add_action('wp_head','justAsimplePopup');
 
-function hex2rgba($color, $opacity = false) 
+function jasp_hex2rgba($color, $opacity = false) 
 	{
 
 		$default = 'rgb(0,0,0)';
