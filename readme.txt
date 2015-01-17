@@ -18,7 +18,7 @@ The plugin allows you to show the pop up on any page by setting up the values in
 
 == Description ==
 
-The plugin allows you to add multiple popups on different pages by setting up the values in the admin panel after activating the plugin. You can change the background,fade In time, opacity, content of the pop in the Admin panel.
+The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. User can add multiple pop ups. Also User can change the background,fade In time, opacity, content of the pop in the Admin panel. User can also add shortcode to the content of this popup.
 
 <a href="http://www.opieproductions.com/just-a-simple-popup-demo">Live Demo (Pro version)</a>
 
