@@ -2,7 +2,7 @@
 /*
 Plugin Name: just a simple popup
 Author: Ankit Chauhan
-Author URI: https://www.facebook.com/Ankit6765
+Author URI: https://profiles.wordpress.org/ankitinaugurate/
 Version:2.0.1
 Description: The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. User can add multiple pop ups. Also User can change the background,fade In time, opacity, content of the pop in the Admin panel. User can also add shortcode to the content of this popup.
 */
@@ -93,7 +93,7 @@ function justAsimplePopup_add_new_popup()
 				</link>
 				<div id="justAsimplePopuppAdminWrapper">
 					<div id="justAsimplePopuppAdminContent">
-						<h2>Add Simple Popup :</h2>
+						<h2>Add Simple Popup :  <a href="http://www.opieproductions.com/just-a-simple-popup-demo">Check Pro version here</a></h2>
 						<h4>'.$popupupdated.'</h4>
 						<div id="justAsimplePopuppAdminForm">
 									
@@ -304,7 +304,7 @@ function justAsimplePopup_admin()
 						</link>
 						<div id="justAsimplePopuppAdminWrapper">
 							<div id="justAsimplePopuppAdminContent">
-								<h2>Just A Simple Popup Settings:</h2>
+								<h2>Just A Simple Popup Settings:   <a href="http://www.opieproductions.com/just-a-simple-popup-demo">Check Pro version here</a></h2>
 								<h4>'.$popupupdated.'</h4>
 								<div id="justAsimplePopuppAdminForm">
 											
@@ -445,7 +445,7 @@ function justAsimplePopup_admin()
 							}
 						 $popupListTable->prepare_items($popupArray);
 						 ?>
-                         <div class="wrap"><h2>Simple Popups <a href="<?php echo site_url();?>/wp-admin/admin.php?page=addpopup" class="add-new-h2">Add New</a></h2>
+                         <div class="wrap"><h2>Simple Popups <a href="<?php echo site_url();?>/wp-admin/admin.php?page=addpopup" class="add-new-h2">Add New</a>  &nbsp;&nbsp;&nbsp;    <a href="http://www.opieproductions.com/just-a-simple-popup-demo">Check Pro version here</a></h2>
                         <!-- Forms are NOT created automatically, so you need to wrap the table in one to use features like bulk actions -->
                              <form id="movies-filter" method="get">
                                  <!-- For plugins, we also need to ensure that the form posts back to our current page -->
