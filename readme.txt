@@ -8,6 +8,7 @@ License: GPLv2 or later
 
 The plugin allows you to show the pop up on any page by setting up the values in the admin panel after activating the plugin. User can add multiple pop ups. Also User can change the background,fade In time, opacity, content of the pop in the Admin panel. User can also add shortcode to the content of this popup.
 
+Live Demo (Pro version) : http://www.opieproductions.com/just-a-simple-popup-demo
 
 == Screenshots ==
 
